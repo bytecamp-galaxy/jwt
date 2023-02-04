@@ -1,4 +1,4 @@
-module github.com/hertz-contrib/jwt
+module github.com/bytecamp-galaxy/jwt
 
 go 1.18
 

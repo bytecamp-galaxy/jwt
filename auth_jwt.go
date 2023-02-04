@@ -449,6 +449,19 @@ func (mw *HertzJWTMiddleware) MiddlewareFunc() app.HandlerFunc {
 	}
 }
 
+type HandlerBoolFunc func(c context.Context, ctx *app.RequestContext) bool
+
+// MiddlewareFuncOptional makes HertzJWTMiddleware implement the Middleware interface.
+func (mw *HertzJWTMiddleware) MiddlewareFuncOptional(fn HandlerBoolFunc) app.HandlerFunc {
+	return func(ctx context.Context, c *app.RequestContext) {
+		if fn(ctx, c) {
+			mw.middlewareImpl(ctx, c)
+		} else {
+			c.Next(ctx)
+		}
+	}
+}
+
 func (mw *HertzJWTMiddleware) middlewareImpl(ctx context.Context, c *app.RequestContext) {
 	claims, err := mw.GetClaimsFromJWT(ctx, c)
 	if err != nil {
